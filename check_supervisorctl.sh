@@ -54,9 +54,10 @@ function print_help() {
 	echo "For contact info, read the plugin itself..."
 }
 function check_supervisor(){
-	check_command=$(supervisorctl status | egrep '(STOPPED)|(STARTING)|(BACKOFF)|(STOPPING)|(EXITED)|(FATAL)|(UNKNOWN)' | wc -l)
-	if (( $check_command != 0 )); then
+	check_command=$(supervisorctl status | grep -v 'RUNNING')
+	if (( $? == 0 )); then
 		echo "One or more of your programs are not running!"
+		echo "$check_command"
 		exit $STATE_CRITICAL
 	else
 		echo "OK: All of your programs are running!"
